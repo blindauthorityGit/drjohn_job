@@ -20,39 +20,90 @@ import Fuenf from "@/assets/5.jpg";
 import Sechs from "@/assets/6.jpg";
 import { H1, H3 } from "@/components/typography";
 
-// Temporary local job data (later, replace with a headless CMS API fetch)
+// Job list adapted to the links from the start page
 const jobs = [
     {
         id: 1,
         title: "ZMA",
         subTitle: "Zahnmedinische/r Fachangestellte/r",
-        slug: "frontend-developer",
+        slug: "zma",
         description: "Build amazing UIs with React.",
     },
     {
         id: 2,
-        title: "Backend Developer",
-        slug: "backend-developer",
+        title: "ZMF",
+        subTitle: "Zahnmedinische/r Fachassistent/in",
+        slug: "zmf",
         description: "Build powerful APIs with Node.js.",
+    },
+    {
+        id: 3,
+        title: "DH",
+        subTitle: "Dentalhygieniker/in",
+        slug: "dh",
+        description: "Job description for DH.",
+    },
+    {
+        id: 4,
+        title: "ZMP",
+        subTitle: "Zahnmedizinische/r Prophylaxeassistent/in",
+        slug: "zmp",
+        description: "Job description for ZMP.",
+    },
+    {
+        id: 5,
+        title: "Angestellte",
+        subTitle: "Angestellte/r Zahnärztin / Zahnarzt",
+        slug: "zahnarzt",
+        description: "Job description for Angestellte.",
+    },
+    {
+        id: 6,
+        title: "Assistenz",
+        subTitle: "Assistenz-Zahnärztin, Assistenz-Zahnarzt",
+        slug: "assistenz-zahnarzt",
+        description: "Job description for Assistenz.",
+    },
+    {
+        id: 7,
+        title: "ZMV",
+        subTitle: "Zahnmedizinische/r Verwaltungsassistent/in",
+        slug: "zmv",
+        description: "Job description for ZMV.",
+    },
+    {
+        id: 8,
+        title: "Bürokraft",
+        subTitle: "Bürokraft mit fundierten Microsoft-Office-Wissen",
+        slug: "buerokraft",
+        description: "Job description for Bürokraft.",
+    },
+    {
+        id: 9,
+        title: "Auszubildende",
+        subTitle: "Auszubildende/r ZMA",
+        slug: "azubi",
+        description: "Job description for Auszubildende.",
     },
 ];
 
 const steps = [
-    { id: 1, component: StepOne, image: Eins },
-    { id: 2, component: StepTwo, image: Zwei },
-    { id: 3, component: StepThree, image: Drei },
-    { id: 4, component: StepFour, image: Vier },
-    { id: 5, component: StepFive, image: Fuenf },
-    { id: 5, component: StepSix, image: Sechs },
-    // ... add additional steps here (up to 6 or more)
+    { id: 1, component: StepOne, image: Eins, title: "1. Zeit" },
+    { id: 2, component: StepTwo, image: Zwei, title: "2. Qualifikation" },
+    { id: 3, component: StepThree, image: Drei, title: "3. Gehalt" },
+    { id: 4, component: StepFour, image: Vier, title: "4. Daten" },
+    { id: 5, component: StepFive, image: Fuenf, title: "5. Unterlagen" },
+    { id: 6, component: StepSix, image: Sechs, title: "Zusammenfassung" },
 ];
 
 export default function JobDetail() {
     const router = useRouter();
     const { slug } = router.query;
+    console.log(slug);
 
-    // Find job data based on slug
+    // Look up job using the new slug from our adapted job list
     const job = jobs.find((j) => j.slug === slug);
+    console.log(jobs.map((e) => e.slug));
     if (!job) {
         return <p>Job not found!</p>;
     }
@@ -82,6 +133,16 @@ export default function JobDetail() {
         }
     };
 
+    // Final submit: validate, update data and route to "/success".
+    const handleFinalSubmit = () => {
+        if (stepRef.current.validate()) {
+            const data = stepRef.current.getData();
+            handleNext(data); // merge final step data if needed
+            // Later: trigger email sending, Firestore save, etc.
+            router.push("/success");
+        }
+    };
+
     // Define subtle hover and tap effects for the buttons
     const buttonMotionProps = {
         whileHover: { scale: 1.02 },
@@ -98,7 +159,9 @@ export default function JobDetail() {
                         <H1>{job.title}</H1>
                         <H3>{job.subTitle}</H3>
                         <StepIndicator
-                            steps={steps.map((step, index) => `Step ${index + 1}`)}
+                            steps={steps.map((step, index) => ({
+                                title: step.title || `Step ${index + 1}`,
+                            }))}
                             currentStep={currentStep}
                         />
                         <StepComponent
@@ -108,13 +171,30 @@ export default function JobDetail() {
                         />
                     </div>
                     <div className="mt-8">
-                        {currentStep === 0 ? (
+                        {currentStep === steps.length - 1 ? (
+                            <div className="flex space-x-4">
+                                <motion.button
+                                    {...buttonMotionProps}
+                                    onClick={handleBack}
+                                    className="flex-1 py-3 cursor-pointer bg-black uppercase text-lg tracking-wider text-white rounded"
+                                >
+                                    zurück
+                                </motion.button>
+                                <motion.button
+                                    {...buttonMotionProps}
+                                    onClick={handleFinalSubmit}
+                                    className="flex-1 py-3 cursor-pointer bg-[#7D886E] uppercase text-lg tracking-wider text-white rounded"
+                                >
+                                    Abschicken
+                                </motion.button>
+                            </div>
+                        ) : currentStep === 0 ? (
                             <motion.button
                                 {...buttonMotionProps}
                                 onClick={handleNextButton}
                                 className="w-full py-3 cursor-pointer bg-black uppercase text-lg tracking-wider text-white rounded"
                             >
-                                Next
+                                WEITer
                             </motion.button>
                         ) : (
                             <div className="flex space-x-4">
@@ -123,14 +203,14 @@ export default function JobDetail() {
                                     onClick={handleBack}
                                     className="flex-1 py-3 cursor-pointer bg-black uppercase text-lg tracking-wider text-white rounded"
                                 >
-                                    Back
+                                    zurück
                                 </motion.button>
                                 <motion.button
                                     {...buttonMotionProps}
                                     onClick={handleNextButton}
                                     className="flex-1 py-3 cursor-pointer bg-black uppercase text-lg tracking-wider text-white rounded"
                                 >
-                                    Next
+                                    WEITer
                                 </motion.button>
                             </div>
                         )}
