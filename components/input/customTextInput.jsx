@@ -70,7 +70,8 @@ const CustomTextInput = forwardRef(
                     </label>
                 )}
                 {secondName ? (
-                    <div className="flex gap-4 mt-1">
+                    // Responsive container: stacked on mobile, side-by-side on lg
+                    <div className="flex flex-col lg:flex-row gap-4 mt-1">
                         <input
                             type="text"
                             name={name}

@@ -52,7 +52,7 @@ const StepOne = forwardRef(({ formData }, ref) => {
 
     return (
         <div>
-            <div className="mt-8"></div>
+            <div className="lg:mt-8"></div>
             {/* Text input field */}
             <CustomChoiceInput
                 ref={choiceInputRef}

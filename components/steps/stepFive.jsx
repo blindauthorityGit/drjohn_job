@@ -1,4 +1,4 @@
-// components/steps/StepFive.jsx
+// components/StepFive.jsx
 import React, { useState, useRef, forwardRef, useImperativeHandle } from "react";
 import { useDropzone } from "react-dropzone";
 import { FaTimes } from "react-icons/fa";
@@ -81,7 +81,7 @@ const StepFive = forwardRef(({ formData }, ref) => {
     }));
 
     return (
-        <div className="mb-6 mt-8">
+        <div className="mb-6 lg:mt-8">
             <label className="text-lg tracking-wider text-black relative flex">
                 <div className="w-4 h-4 mr-2 bg-[#D9DED7]" />
                 Wenn Sie möchten, können Sie hier Ihre Bewerbungsunterlagen hochladen
@@ -100,14 +100,16 @@ const StepFive = forwardRef(({ formData }, ref) => {
                     </div>
                 )}
                 {!uploading && (
-                    <p className="text-center text-black tracking-wider flex flex-col items-center">
+                    <div className="text-center text-black tracking-wider flex flex-col items-center">
                         <img className="max-w-[128px] mb-8" src={DL.src} alt="Download" />
-                        Ziehen Sie Ihre Datei(en) hierher oder klicken Sie, um sie auszuwählen.
-                    </p>
+                        {/* Mobile text: visible only on small screens */}
+                        <p className="block lg:hidden">Hier Daten hochladen</p>
+                        {/* Desktop text: visible on lg and up */}
+                        <p className="hidden lg:block">
+                            Ziehen Sie Ihre Datei(en) hierher oder klicken Sie, um sie auszuwählen.
+                        </p>
+                    </div>
                 )}
-                {/* {!uploading && fileData.length > 0 && (
-                    <p className="text-center text-gray-500">Dateien erfolgreich hochgeladen.</p>
-                )} */}
             </div>
             {uploadError && <p className="mt-2 text-xs text-red-500">{uploadError}</p>}
             {fileData.length > 0 && (

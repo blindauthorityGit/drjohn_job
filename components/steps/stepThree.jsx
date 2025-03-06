@@ -55,7 +55,7 @@ const StepThree = forwardRef(({ formData }, ref) => {
 
     return (
         <div>
-            <div className="mt-8"></div>
+            <div className="lg:mt-8"></div>
 
             <CustomTextInput
                 ref={salaryRef}

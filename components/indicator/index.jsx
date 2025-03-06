@@ -7,14 +7,13 @@ const StepIndicator = ({ steps, currentStep }) => {
     const progress = (currentStep / (steps.length - 1)) * 100;
 
     return (
-        <div className="w-full flex flex-col items-center bg-[#D9DED7] p-2">
-            {/* Container for the step indicator */}
+        <div className="fixed top-0 left-0 right-0 z-20 w-full flex flex-col items-center bg-[#D9DED7] p-2 lg:sticky lg:top-0">
             <div className="relative w-full">
                 {/* Background line */}
                 <div className="absolute top-3 left-0 right-0 h-1 bg-gray-300" />
                 {/* Animated progress line */}
                 <motion.div
-                    className="absolute top-3 left-0 h-1 bg-black"
+                    className="absolute top-2 lg:top-3 left-0 h-1 bg-black"
                     initial={{ width: 0 }}
                     animate={{ width: `${progress}%` }}
                     transition={{ duration: 0.5 }}
@@ -30,14 +29,14 @@ const StepIndicator = ({ steps, currentStep }) => {
                                     scale: index <= currentStep ? 1.0 : 0.9,
                                 }}
                                 transition={{ duration: 0.5 }}
-                                className={`w-5 h-5 rounded-full border border-gray-300 flex items-center justify-center bg-black ${
-                                    index <= currentStep ? "text-white" : "text-gray-400 bg-gray-100"
+                                className={`w-5 h-5 rounded-full border border-gray-300 flex items-center justify-center ${
+                                    index <= currentStep ? "bg-black text-white" : "bg-gray-100 text-gray-400"
                                 }`}
                             >
                                 <span className="text-xs">{index + 1}</span>
                             </motion.div>
                             <span
-                                className={`mt-2 text-xs text-center ${
+                                className={`mt-2 text-xs text-center hidden lg:block ${
                                     index <= currentStep ? "text-black" : "text-gray-500"
                                 }`}
                             >

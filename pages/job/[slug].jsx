@@ -119,10 +119,20 @@ export default function JobDetail() {
     // When moving to the next step, merge data from the step into global formData.
     const handleNext = (data) => {
         setFormData((prev) => ({ ...prev, ...data }));
-        setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
+        setCurrentStep((prev) => {
+            const nextStep = Math.min(prev + 1, steps.length - 1);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+            return nextStep;
+        });
     };
 
-    const handleBack = () => setCurrentStep((prev) => Math.max(prev - 1, 0));
+    const handleBack = () => {
+        setCurrentStep((prev) => {
+            const newStep = Math.max(prev - 1, 0);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+            return newStep;
+        });
+    };
 
     // The parent's Next button triggers the step's validate method.
     const handleNextButton = () => {
@@ -149,28 +159,59 @@ export default function JobDetail() {
         whileTap: { scale: 0.98 },
         transition: { duration: 0.15 },
     };
-
     return (
         <>
-            <Menu />
-            <div className="grid grid-cols-12 min-h-screen overflow-y-auto font-headline">
-                <div className="col-span-6 p-16 pt-48 flex flex-col">
-                    <div className="flex-1">
-                        <H1>{job.title}</H1>
-                        <H3>{job.subTitle}</H3>
-                        <StepIndicator
-                            steps={steps.map((step, index) => ({
-                                title: step.title || `Step ${index + 1}`,
-                            }))}
-                            currentStep={currentStep}
-                        />
-                        <StepComponent
-                            ref={stepRef}
-                            formData={formData}
-                            isLastStep={currentStep === steps.length - 1}
-                        />
+            <Menu showLink />
+            <div className="grid grid-cols-1 lg:grid-cols-12 min-h-screen font-headline">
+                {/* Mobile: Image on top; Desktop: Content on left */}
+                <div className="order-first lg:order-last relative overflow-hidden">
+                    <div className="h-[25vh] lg:fixed lg:top-0  lg:right-0 lg:h-screen lg:w-[50%]">
+                        <AnimatePresence exitBeforeEnter>
+                            <motion.div
+                                key={currentImage.src}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.5 }}
+                                className="h-full w-full"
+                            >
+                                <CoverImage
+                                    src={currentImage.src}
+                                    mobileSrc={currentImage.src}
+                                    alt="Cover Background"
+                                    klasse={"absolute "}
+                                    className="h-full w-full object-cover"
+                                />
+                            </motion.div>
+                        </AnimatePresence>
                     </div>
-                    <div className="mt-8">
+                </div>
+
+                {/* Content Section */}
+                <div className="order-last lg:order-first lg:col-span-6 pt-0  lg:p-16 lg:pt-48 flex flex-col">
+                    <div className="flex-1 flex flex-col">
+                        {/* On mobile, show the indicator first; on desktop, show title first */}
+                        <div className="order-1 lg:order-2">
+                            <StepIndicator
+                                steps={steps.map((step, index) => ({
+                                    title: step.title || `Step ${index + 1}`,
+                                }))}
+                                currentStep={currentStep}
+                            />
+                        </div>
+                        <div className="order-2 lg:order-1 p-4 lg:p-0">
+                            <H1>{job.title}</H1>
+                            <H3>{job.subTitle}</H3>
+                        </div>
+                        <div className="order-3 p-4 lg:p-0">
+                            <StepComponent
+                                ref={stepRef}
+                                formData={formData}
+                                isLastStep={currentStep === steps.length - 1}
+                            />
+                        </div>
+                    </div>
+                    <div className="mt-8 p-4 lg:p-0">
                         {currentStep === steps.length - 1 ? (
                             <div className="flex space-x-4">
                                 <motion.button
@@ -214,28 +255,6 @@ export default function JobDetail() {
                                 </motion.button>
                             </div>
                         )}
-                    </div>
-                </div>
-                <div className="col-span-6 relative overflow-hidden">
-                    <div className="sticky top-0 h-screen">
-                        <AnimatePresence exitBeforeEnter>
-                            <motion.div
-                                key={currentImage.src}
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                transition={{ duration: 0.5 }}
-                                className="h-full w-full"
-                            >
-                                <CoverImage
-                                    src={currentImage.src}
-                                    mobileSrc={currentImage.src}
-                                    alt="Cover Background"
-                                    klasse={"absolute "}
-                                    className="h-full w-full object-cover"
-                                />
-                            </motion.div>
-                        </AnimatePresence>
                     </div>
                 </div>
             </div>

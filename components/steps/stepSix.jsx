@@ -32,7 +32,7 @@ const StepSix = forwardRef(({ formData }, ref) => {
     const { fileData: _, ...otherFields } = formData || {};
 
     return (
-        <div className="mt-8">
+        <div className="lg:mt-8">
             <div className="flex flex-col">
                 <h2 className="text-2xl font-bold mb-6 uppercase tracking-wider">ZUSAMMENFASSUNG</h2>
 
