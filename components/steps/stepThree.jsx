@@ -1,5 +1,5 @@
 // components/steps/StepThree.jsx
-import React, { useState, useRef, forwardRef, useImperativeHandle } from "react";
+import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from "react";
 import CustomTextInput from "@/components/input/customTextInput";
 import CustomDropdown from "@/components/input/customDropDown";
 
@@ -14,6 +14,15 @@ const StepThree = forwardRef(({ formData }, ref) => {
     const salaryRef = useRef();
     const vacationRef = useRef();
     const dropdownRef = useRef();
+
+    // If formData changes, update localData so previously entered values appear
+    useEffect(() => {
+        setLocalData({
+            gehalt: formData.gehalt || "",
+            urlaub: formData.urlaub || "",
+            beginn: formData.beginn || "",
+        });
+    }, [formData]);
 
     const handleFieldChange = (name, value) => {
         setLocalData((prev) => ({ ...prev, [name]: value }));

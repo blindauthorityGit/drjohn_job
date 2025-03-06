@@ -1,5 +1,5 @@
 // components/steps/StepTwo.jsx
-import React, { useState, useRef, forwardRef, useImperativeHandle } from "react";
+import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from "react";
 import CustomDropdown from "@/components/input/customDropDown";
 import CustomCheckboxGroup from "@/components/input/customCheckboxGroup";
 import CustomSlider from "@/components/input/customSlider";
@@ -14,6 +14,15 @@ const StepTwo = forwardRef(({ formData }, ref) => {
     const checkboxRef = useRef();
     const sliderRef = useRef();
 
+    // If formData changes, update localData so previously entered values appear
+    useEffect(() => {
+        setLocalData({
+            schulabschluss: formData.schulabschluss || "",
+            qualifikation: formData.qualifikation || [],
+            erfahrung: formData.erfahrung || 0,
+        });
+    }, [formData]);
+
     const handleFieldChange = (name, value) => {
         setLocalData((prev) => ({ ...prev, [name]: value }));
     };
@@ -21,7 +30,7 @@ const StepTwo = forwardRef(({ formData }, ref) => {
     // Validator for the dropdown: error if nothing is selected
     const validateJobType = (value) => {
         if (!value) {
-            return "Please select a job type";
+            return "Bitte eine Auswahl treffen";
         }
         return null;
     };
@@ -29,7 +38,7 @@ const StepTwo = forwardRef(({ formData }, ref) => {
     // Validator for the checkbox group: require at least one selection
     const validateInterests = (value) => {
         if (!value || value.length === 0) {
-            return "Please select at least one interest";
+            return "Bitte eine Auswahl treffen";
         }
         return null;
     };

@@ -1,5 +1,5 @@
 // components/steps/StepOne.jsx
-import React, { useState, useRef, forwardRef, useImperativeHandle } from "react";
+import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from "react";
 import CustomTextInput from "@/components/input/customTextInput";
 import CustomChoiceInput from "@/components/input/customChoiceInput";
 
@@ -13,6 +13,14 @@ const StepOne = forwardRef(({ formData }, ref) => {
     });
     const textInputRef = useRef();
     const choiceInputRef = useRef();
+
+    // Update localData if formData changes (e.g. when the user navigates back)
+    useEffect(() => {
+        setLocalData({
+            zeitWunsch: formData.zeitWunsch || "",
+            Arbeitsumfang: formData.Arbeitsumfang || "",
+        });
+    }, [formData]);
 
     const handleFieldChange = (name, value) => {
         setLocalData((prev) => ({ ...prev, [name]: value }));

@@ -1,12 +1,20 @@
 // components/StepFive.jsx
-import React, { useState, useRef, forwardRef, useImperativeHandle } from "react";
+import React, { useState, useRef, forwardRef, useImperativeHandle, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { FaTimes } from "react-icons/fa";
 import DL from "@/assets/dl.svg";
 
+const LOCAL_STORAGE_KEY = "stepFiveFiles";
+
 const StepFive = forwardRef(({ formData }, ref) => {
-    // Use an array to hold multiple file uploads.
-    const [fileData, setFileData] = useState(formData.fileData || []);
+    // Initialize fileData from formData or from localStorage if available.
+    const [fileData, setFileData] = useState(() => {
+        if (typeof window !== "undefined") {
+            const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
+            return stored ? JSON.parse(stored) : formData.fileData || [];
+        }
+        return formData.fileData || [];
+    });
     const [uploading, setUploading] = useState(false);
     const [uploadError, setUploadError] = useState(null);
 
@@ -19,7 +27,7 @@ const StepFive = forwardRef(({ formData }, ref) => {
     const maxSize = 5 * 1024 * 1024; // 5MB
 
     // Dummy upload function simulating Firebase upload.
-    // For images, returns a preview URL; for PDFs, returns null (to display a PDF icon).
+    // For images, returns a preview URL; for PDFs, returns null (so you can display a PDF icon).
     const uploadFile = (file) => {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
@@ -29,13 +37,12 @@ const StepFive = forwardRef(({ formData }, ref) => {
         });
     };
 
-    // onDrop now processes each accepted file and appends it to fileData.
+    // onDrop processes each accepted file and appends its metadata to fileData.
     const onDrop = async (acceptedFiles, rejectedFiles) => {
         if (rejectedFiles && rejectedFiles.length > 0) {
             setUploadError("Ungültiges Format oder Datei zu groß. (Max. 5MB; PDF, JPG, PNG)");
             return;
         }
-
         if (acceptedFiles && acceptedFiles.length > 0) {
             setUploadError(null);
             setUploading(true);
@@ -48,10 +55,9 @@ const StepFive = forwardRef(({ formData }, ref) => {
                 try {
                     const previewUrl = await uploadFile(file);
                     const fileInfo = {
-                        file,
-                        url: previewUrl, // may be null for PDFs
+                        fileName: file.name,
                         type: file.type,
-                        name: file.name,
+                        url: previewUrl, // May be null for PDFs
                     };
                     newFiles.push(fileInfo);
                 } catch (error) {
@@ -69,12 +75,19 @@ const StepFive = forwardRef(({ formData }, ref) => {
         maxSize,
     });
 
-    // Remove a specific file from the array.
+    // Remove a file and update localStorage.
     const removeFile = (index) => {
         setFileData((prev) => prev.filter((_, i) => i !== index));
     };
 
-    // Since the upload is optional, validate always returns true.
+    // When fileData changes, update localStorage.
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(fileData));
+        }
+    }, [fileData]);
+
+    // Expose validate() and getData() methods.
     useImperativeHandle(ref, () => ({
         validate: () => true,
         getData: () => fileData,
@@ -102,9 +115,7 @@ const StepFive = forwardRef(({ formData }, ref) => {
                 {!uploading && (
                     <div className="text-center text-black tracking-wider flex flex-col items-center">
                         <img className="max-w-[128px] mb-8" src={DL.src} alt="Download" />
-                        {/* Mobile text: visible only on small screens */}
                         <p className="block lg:hidden">Hier Daten hochladen</p>
-                        {/* Desktop text: visible on lg and up */}
                         <p className="hidden lg:block">
                             Ziehen Sie Ihre Datei(en) hierher oder klicken Sie, um sie auszuwählen.
                         </p>
@@ -117,7 +128,7 @@ const StepFive = forwardRef(({ formData }, ref) => {
                     {fileData.map((data, index) => (
                         <div key={index} className="relative">
                             {data.type.startsWith("image/") ? (
-                                <img src={data.url} alt={data.name} className="w-20 h-20 object-cover rounded" />
+                                <img src={data.url} alt={data.fileName} className="w-20 h-20 object-cover rounded" />
                             ) : (
                                 <div className="w-20 h-20 flex items-center justify-center bg-gray-200 rounded">
                                     <span className="text-3xl">📄</span>
@@ -129,7 +140,7 @@ const StepFive = forwardRef(({ formData }, ref) => {
                             >
                                 <FaTimes className="text-red-500" />
                             </button>
-                            <p className="text-sm mt-1">{data.name}</p>
+                            <p className="text-sm mt-1">{data.fileName}</p>
                         </div>
                     ))}
                 </div>

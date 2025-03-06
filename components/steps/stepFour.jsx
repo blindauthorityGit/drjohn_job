@@ -1,5 +1,5 @@
 // components/steps/StepFour.jsx
-import React, { useState, useRef, forwardRef, useImperativeHandle } from "react";
+import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from "react";
 import CustomTextInput from "@/components/input/customTextInput";
 import CustomCheckboxGroup from "@/components/input/customCheckboxGroup";
 import CustomDropdown from "@/components/input/customDropDown";
@@ -19,6 +19,18 @@ const StepFour = forwardRef(({ formData }, ref) => {
     const contactInfoRef = useRef();
     const checkboxRef = useRef();
     const dropdownRef = useRef();
+
+    // If formData changes, update localData so previously entered values appear
+    useEffect(() => {
+        setLocalData({
+            vorname: formData.vorname || "",
+            nachname: formData.nachname || "",
+            email: formData.email || "",
+            telefon: formData.telefon || "",
+            kontaktweg: formData.kontaktweg || [],
+            kontaktzeit: formData.kontaktzeit || "",
+        });
+    }, [formData]);
 
     const handleFieldChange = (name, value) => {
         setLocalData((prev) => ({ ...prev, [name]: value }));
