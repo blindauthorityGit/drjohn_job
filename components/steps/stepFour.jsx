@@ -1,4 +1,3 @@
-// components/steps/StepFour.jsx
 import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from "react";
 import CustomTextInput from "@/components/input/customTextInput";
 import CustomCheckboxGroup from "@/components/input/customCheckboxGroup";
@@ -8,23 +7,26 @@ const StepFour = forwardRef(({ formData }, ref) => {
     const [localData, setLocalData] = useState({
         vorname: formData.vorname || "",
         nachname: formData.nachname || "",
+        geburtsjahr: formData.geburtsjahr || "",
         email: formData.email || "",
         telefon: formData.telefon || "",
         kontaktweg: formData.kontaktweg || [],
         kontaktzeit: formData.kontaktzeit || "",
     });
 
-    // Create separate refs for each custom input group
+    // Create separate refs for each group of fields.
     const personalDataRef = useRef();
+    const birthYearRef = useRef();
     const contactInfoRef = useRef();
     const checkboxRef = useRef();
     const dropdownRef = useRef();
 
-    // If formData changes, update localData so previously entered values appear
+    // Update localData if formData changes (e.g. when the user navigates back)
     useEffect(() => {
         setLocalData({
             vorname: formData.vorname || "",
             nachname: formData.nachname || "",
+            geburtsjahr: formData.geburtsjahr || "",
             email: formData.email || "",
             telefon: formData.telefon || "",
             kontaktweg: formData.kontaktweg || [],
@@ -44,14 +46,24 @@ const StepFour = forwardRef(({ formData }, ref) => {
         return null;
     };
 
-    // Nachname is optional; no validation needed.
+    // Nachname is optional.
     const validateOptional = () => null;
+
+    // Mandatory validator for Geburtsjahr.
+    const validateGeburtsjahr = (value) => {
+        if (!value.trim()) {
+            return "Bitte geben Sie Ihr Geburtsjahr ein";
+        }
+        if (!/^\d{4}$/.test(value.trim())) {
+            return "Bitte geben Sie ein gültiges Geburtsjahr ein (z.B. 1980)";
+        }
+        return null;
+    };
 
     const validateEmail = (value) => {
         if (!value.trim()) {
             return "Bitte geben Sie Ihre E-Mail-Adresse ein";
         }
-        // Simple email check
         if (!value.includes("@")) {
             return "Bitte geben Sie eine gültige E-Mail-Adresse ein";
         }
@@ -65,7 +77,6 @@ const StepFour = forwardRef(({ formData }, ref) => {
         return null;
     };
 
-    // For the checkbox group, require exactly one selection.
     const validateKontaktweg = (value) => {
         if (!value || value.length !== 1) {
             return "Bitte wählen Sie einen bevorzugten Kontaktweg";
@@ -80,14 +91,15 @@ const StepFour = forwardRef(({ formData }, ref) => {
         return null;
     };
 
-    // Expose a combined validate() and getData() to the parent.
+    // Expose validate() and getData() methods.
     useImperativeHandle(ref, () => ({
         validate: () => {
             const personalValid = personalDataRef.current.validate();
+            const birthYearValid = birthYearRef.current.validate();
             const contactValid = contactInfoRef.current.validate();
             const checkboxValid = checkboxRef.current.validate();
             const dropdownValid = dropdownRef.current.validate();
-            return personalValid && contactValid && checkboxValid && dropdownValid;
+            return personalValid && birthYearValid && contactValid && checkboxValid && dropdownValid;
         },
         getData: () => localData,
     }));
@@ -95,8 +107,7 @@ const StepFour = forwardRef(({ formData }, ref) => {
     return (
         <div>
             <div className="lg:mt-8"></div>
-
-            {/* Personal Data */}
+            {/* Personal Data: Vorname and Nachname */}
             <CustomTextInput
                 ref={personalDataRef}
                 label="Bitte geben Sie Ihre persönlichen Daten an."
@@ -111,6 +122,19 @@ const StepFour = forwardRef(({ formData }, ref) => {
                 secondOnChange={handleFieldChange}
                 secondValidator={validateOptional}
             />
+
+            {/* Geburtsjahr Field */}
+            <div className="mt-4">
+                <CustomTextInput
+                    ref={birthYearRef}
+                    label="Geburtsjahr"
+                    name="geburtsjahr"
+                    placeholder="z.B. 1980"
+                    value={localData.geburtsjahr}
+                    onChange={handleFieldChange}
+                    validator={validateGeburtsjahr}
+                />
+            </div>
 
             {/* Contact Information */}
             <CustomTextInput

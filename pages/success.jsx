@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { CoverImage } from "@/components/images";
 import Menu from "@/components/menu";
 import { H1, H2, H3 } from "@/components/typography";
-import Thilo from "@/assets/thilo.jpg";
+import Thilo from "@/assets/thilo_neu.jpg";
 
 export default function Success() {
     const router = useRouter();
@@ -58,16 +58,16 @@ export default function Success() {
                         className="flex-1"
                     >
                         {/* Pass the hyphens-auto class to H1 */}
-                        <H1 klasse="hyphens-auto !text-4xl" lang="de">
+                        <H1 klasse="hyphens-auto !text-4xl !normal-case" lang="de">
                             Vielen Dank für Ihre Bewerbung bei der Zahnarztpraxis Dreieich!
                         </H1>
                         <p className="text-lg tracking-wider mt-8">
-                            Herzlichen Dank für Ihre Bewerbung und Ihr Interesse an einer Mitarbeit in unserer Praxis!
+                            Herzlichen Dank für Ihre Zeit und Ihr Interesse an einer Mitarbeit in unserem Team
                         </p>
                         <p className="text-lg tracking-wider mt-4">
-                            Wir wissen Ihr Vertrauen und Ihre Zeit sehr zu schätzen. Unser Praxismanager{" "}
-                            <strong>Thilo Höpfl</strong> wird sich innerhalb der{" "}
-                            <strong>nächsten 48 Stunden per E-Mail oder Telefon</strong> bei Ihnen melden.
+                            Wir wissen Ihr Vertrauen und Ihren Einsatz sehr zu schätzen. Unser Praxismanager{" "}
+                            <strong>Thilo Höpfl</strong> wird sich zuverlässig innerhalb der{" "}
+                            <strong>nächsten 48 Stunden</strong> bei Ihnen melden.
                         </p>
                         <p className="text-lg tracking-wider mt-4">
                             Sollten Sie in der Zwischenzeit Fragen haben, stehen wir Ihnen gerne unter{" "}

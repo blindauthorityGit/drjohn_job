@@ -71,11 +71,11 @@ const StepTwo = forwardRef(({ formData }, ref) => {
         },
         { value: "Fachhochschulreife", label: "Fachhochschulreife" },
         { value: "Allgemeine Hochschulreife (Abitur)", label: "Allgemeine Hochschulreife (Abitur)" },
-        { value: "Berufsabschluss ohne Schulabschluss", label: "Berufsabschluss ohne Schulabschluss" },
-        { value: "Berufsabschluss mit Hauptschulabschluss", label: "Berufsabschluss mit Hauptschulabschluss" },
-        { value: "Berufsabschluss mit Realschulabschluss", label: "Berufsabschluss mit Realschulabschluss" },
-        { value: "Berufsabschluss mit Fachhochschulreife", label: "Berufsabschluss mit Fachhochschulreife" },
-        { value: "Berufsabschluss mit Abitur", label: "Berufsabschluss mit Abitur)" },
+        // { value: "Berufsabschluss ohne Schulabschluss", label: "Berufsabschluss ohne Schulabschluss" },
+        // { value: "Berufsabschluss mit Hauptschulabschluss", label: "Berufsabschluss mit Hauptschulabschluss" },
+        // { value: "Berufsabschluss mit Realschulabschluss", label: "Berufsabschluss mit Realschulabschluss" },
+        // { value: "Berufsabschluss mit Fachhochschulreife", label: "Berufsabschluss mit Fachhochschulreife" },
+        // { value: "Berufsabschluss mit Abitur", label: "Berufsabschluss mit Abitur)" },
         { value: "Sonstiger Abschluss", label: "Sonstiger Abschluss)" },
     ];
 

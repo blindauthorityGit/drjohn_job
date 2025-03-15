@@ -20,38 +20,38 @@ const benefitsData = [
     },
     {
         icon: <FaSmile size={64} />,
-        title: "Angenehmes Arbeitsklima",
+        title: "Angenehmes Umfeld",
         items: [
             "Kurze Entscheidungswege & flache Hierarchien",
-            "Kollegiales Team & regelmäßige Mitarbeiterevents",
-            "Krisensicherer Arbeitsplatz",
+            "Kollegiales Team, welches zusammenhält",
+            "Sicherer, konjunkturunabhängiger Arbeitsplatz",
+            "Freude bei der Arbeit",
+            "Eigenverantwortliches Handeln mit Entscheidungsfreiheit",
         ],
     },
     {
         icon: <FaGraduationCap size={64} />,
         title: "Entwicklung & Weiterbildung",
-        items: [
-            "Karriereperspektiven & interne Weiterbildungsmöglichkeiten",
-            "Übernahme von Weiterbildungen & Fortbildungskosten",
-        ],
+        items: ["Externe und interne Weiterbildungsmöglichkeiten", "Übernahme von Fortbildungskosten"],
     },
     {
         icon: <FaMoneyBillWave size={64} />,
         title: "Finanzielle Vorteile",
         items: [
             "Unbefristeter Arbeitsvertrag",
-            "Urlaubsgeld & Weihnachtsgeld",
-            "50 € steuerfrei extra zum Lohn (in Planung!)",
-            "Inflationszuschuss & Erholungsbeihilfe (je nach Situation)",
+            "Steuer- und sozialversicherungsfreie Lohn-Ersatzleistungen wie z.B. Erholungsbeihilfe",
+            "Arbeitgeberunterstützte betriebliche Altersvorsorge",
+            "Vergünstigte Einkaufskonditionen über Corporate Benefits",
         ],
     },
     {
         icon: <FaCoffee size={64} />,
         title: "Zusätzliche Annehmlichkeiten",
         items: [
-            "Kostenlose Getränke",
             "Kostenfreier Parkplatz (3 Minuten von der Praxis entfernt)",
             "Sehr gute Anbindung aus Frankfurt & Umgebung",
+            "Arbeiten in der schönsten Straße von Dreieich (direkt neben dem Eiscafe….besonders vorteilhaft im Sommer)",
+            "Chefin und Praxismanager bringen immer wieder Kuchen mit",
         ],
     },
 ];
@@ -102,10 +102,16 @@ export default function Home() {
                 {/* Content Section */}
                 <div className="order-last lg:order-first lg:col-span-8 p-8 lg:p-16 lg:pt-64 flex flex-col">
                     <div className="flex-1">
-                        <H1>Ihr Job mit echten Vorteilen!</H1>
+                        <H1>Ihr Lächeln fehlt uns noch – bewerben Sie sich bei uns.</H1>
                         <p className="text-lg tracking-wider mt-8">
-                            Bei uns erwartet Sie mehr als nur ein Job! Wir legen großen Wert auf Fairness, Teamgeist und
-                            echte Wertschätzung.
+                            Sie wünschen sich in Ihrem Job echte Wertschätzung? Sie freuen sich über Teamgeist und gute
+                            Laune? Sie möchten wieder Spaß an dem haben, was Sie täglich tun? Na dann bewerben Sie sich
+                            doch bei uns!{" "}
+                        </p>
+                        <p className="text-lg tracking-wider mt-4">
+                            Geht ganz einfach: nehmen Sie sich <strong>zwei bis drei Minuten</strong> Zeit, beantworten
+                            im Folgenden ein paar wenige Fragen und schon werden Sie vielleicht Teil unseres tollen
+                            Teams, mit welchem Sie in Zukunft für unsere netten Patienten da sein können.
                         </p>
                         <p className="text-lg tracking-wider mt-4">
                             <strong>Hier sind einige unserer Benefits:</strong>
@@ -116,12 +122,21 @@ export default function Home() {
                             ))}
                         </div>
 
-                        <p className="text-lg tracking-wider mt-8 mb-16">
-                            Bei uns treffen neue Kolleginnen & Kollegen auf ein berufliches Umfeld, in dem Fair Play,
-                            Teamgeist und eine empathische, freundliche Chefin zusammenkommen. Wir fordern viel, aber
-                            wir honorieren Leistung mit Benefits, Anerkennung und echtem Teamzusammenhalt.
+                        <p className="text-lg tracking-wider mt-8 mb-4">
+                            Bei uns treffen neue Kolleginnen & Kollegen auf eine berufliche Atmosphäre, in welcher Fair
+                            Play, Teamgeist und eine empathische, freundliche Chefin und ein gutgelaunter, organisierter
+                            Praxismanager auf menschlich tolle Leute treffen.
                         </p>
-                        <H1>Offene Stellen</H1>
+                        <p className="text-lg tracking-wider mt-8 mb-16">
+                            Wir fordern einiges, honorieren dafür Leistung mit Benefits, Anerkennung, echtem
+                            Teamzusammenhalt und Freude beim Job. (Obwohl wir so ehrlich sind und zugeben, dass bei uns
+                            – wie überall – auch nicht immer alles Gold ist was glänzt.)
+                        </p>
+                        <H1>Ihre Job-Möglichkeiten bei uns</H1>
+                        <p className="text-lg tracking-wider mt-8 mb-4">
+                            Einfach zwei Minuten Zeit nehmen, durch die folgenden Fragen klicken und dann lernen wir uns
+                            vielleicht bald kennen.
+                        </p>
                         <ul className="space-y-6 mt-8 mb-16">
                             {jobLinks.map((job) => (
                                 <li key={job.code}>

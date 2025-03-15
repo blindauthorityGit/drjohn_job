@@ -1,4 +1,3 @@
-// components/steps/StepOne.jsx
 import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from "react";
 import CustomTextInput from "@/components/input/customTextInput";
 import CustomChoiceInput from "@/components/input/customChoiceInput";
@@ -9,12 +8,12 @@ import Teilzeit from "@/assets/teilzeit.svg";
 const StepOne = forwardRef(({ formData }, ref) => {
     const [localData, setLocalData] = useState({
         zeitWunsch: formData.zeitWunsch || "",
-        Arbeitsumfang: formData.optionSelected || "",
+        Arbeitsumfang: formData.Arbeitsumfang || "",
     });
     const textInputRef = useRef();
     const choiceInputRef = useRef();
 
-    // Update localData if formData changes (e.g. when the user navigates back)
+    // Update local state if formData changes (e.g. when user navigates back)
     useEffect(() => {
         setLocalData({
             zeitWunsch: formData.zeitWunsch || "",
@@ -26,13 +25,12 @@ const StepOne = forwardRef(({ formData }, ref) => {
         setLocalData((prev) => ({ ...prev, [name]: value }));
     };
 
-    // Optional validator for the text input (adjust as needed)
+    // Optional validator for the text input (this field is optional)
     const validateZeitWunsch = (value) => {
-        // For example, this field could be optional, so no error is returned.
         return null;
     };
 
-    // A simple validator for the choice input (error if nothing is selected)
+    // Simple validator for the choice input (must choose something)
     const validateChoice = (value) => {
         if (!value) {
             return "Bitte eine Option wählen";
@@ -40,28 +38,29 @@ const StepOne = forwardRef(({ formData }, ref) => {
         return null;
     };
 
-    // Expose methods to the parent via the ref:
-    // - validate: triggers validation on both custom inputs
-    // - getData: returns the local form data for this step
+    // Expose methods to the parent via the ref
     useImperativeHandle(ref, () => ({
         validate: () => {
-            const textValid = textInputRef.current.validate();
             const choiceValid = choiceInputRef.current.validate();
-            return textValid && choiceValid;
+            // Only validate text input if "Teilzeit" is chosen.
+            let textValid = true;
+            if (localData.Arbeitsumfang === "Teilzeit") {
+                textValid = textInputRef.current.validate();
+            }
+            return choiceValid && textValid;
         },
         getData: () => localData,
     }));
 
-    // Example options for the custom choice component
+    // Options for the custom choice component
     const options = [
-        { value: "Vollzeit", label: "Vollzeit", icon: <img src={Vollzeit.src}></img> },
-        { value: "Teilzeit", label: "Teilzeit", icon: <img src={Teilzeit.src}></img> },
+        { value: "Vollzeit", label: "Vollzeit", icon: <img src={Vollzeit.src} alt="Vollzeit" /> },
+        { value: "Teilzeit", label: "Teilzeit", icon: <img src={Teilzeit.src} alt="Teilzeit" /> },
     ];
 
     return (
         <div>
             <div className="lg:mt-8"></div>
-            {/* Text input field */}
             <CustomChoiceInput
                 ref={choiceInputRef}
                 label="Möchten Sie Voll- oder Teilzeit arbeiten?"
@@ -72,17 +71,17 @@ const StepOne = forwardRef(({ formData }, ref) => {
                 validator={validateChoice}
             />
             <div className="h-4"></div>
-
-            <CustomTextInput
-                ref={textInputRef}
-                label="Wie viele Stunden und Tage pro Woche? (optional)"
-                name="zeitWunsch"
-                placeholder="z.B. 38h pro Woche"
-                value={localData.zeitWunsch}
-                onChange={handleFieldChange}
-                validator={validateZeitWunsch}
-            />
-            {/* Custom choice input mapped out */}
+            {localData.Arbeitsumfang === "Teilzeit" && (
+                <CustomTextInput
+                    ref={textInputRef}
+                    label="Wie viele Stunden und Tage pro Woche? (optional)"
+                    name="zeitWunsch"
+                    placeholder="z.B. 38h pro Woche"
+                    value={localData.zeitWunsch}
+                    onChange={handleFieldChange}
+                    validator={validateZeitWunsch}
+                />
+            )}
         </div>
     );
 });

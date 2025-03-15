@@ -89,7 +89,7 @@ const StepThree = forwardRef(({ formData }, ref) => {
             <CustomDropdown
                 ref={dropdownRef}
                 name="beginn"
-                label="Wann könnten Sie bei uns anfangen?"
+                label="Wann möchten Sie bei uns loslegen und unser Team bereichern?"
                 options={options}
                 value={localData.beginn}
                 onChange={handleFieldChange}

@@ -16,6 +16,7 @@ import Eins from "@/assets/1.jpg";
 import Zwei from "@/assets/2.jpg";
 import Drei from "@/assets/3.jpg";
 import Vier from "@/assets/4.jpg";
+import VierNeu from "@/assets/4_neu.jpg";
 import Fuenf from "@/assets/5.jpg";
 import Sechs from "@/assets/6.jpg";
 import { H1, H3 } from "@/components/typography";
@@ -91,7 +92,7 @@ const steps = [
     { id: 1, component: StepOne, image: Eins, title: "1. Zeit" },
     { id: 2, component: StepTwo, image: Zwei, title: "2. Qualifikation" },
     { id: 3, component: StepThree, image: Drei, title: "3. Gehalt" },
-    { id: 4, component: StepFour, image: Vier, title: "4. Daten" },
+    { id: 4, component: StepFour, image: VierNeu, title: "4. Daten" },
     { id: 5, component: StepFive, image: Fuenf, title: "5. Unterlagen" },
     { id: 6, component: StepSix, image: Sechs, title: "Zusammenfassung" },
 ];
@@ -109,6 +110,8 @@ export default function JobDetail() {
     }
 
     const [currentStep, setCurrentStep] = useState(0);
+    const [maxStepReached, setMaxStepReached] = useState(0);
+
     const [formData, setFormData] = useState({});
     const stepRef = useRef();
 
@@ -121,6 +124,8 @@ export default function JobDetail() {
         setFormData((prev) => ({ ...prev, ...data }));
         setCurrentStep((prev) => {
             const nextStep = Math.min(prev + 1, steps.length - 1);
+            // Update maxStepReached if necessary
+            setMaxStepReached((prevMax) => Math.max(prevMax, nextStep));
             window.scrollTo({ top: 0, behavior: "smooth" });
             return nextStep;
         });
@@ -144,12 +149,39 @@ export default function JobDetail() {
     };
 
     // Final submit: validate, update data and route to "/success".
-    const handleFinalSubmit = () => {
+    const handleFinalSubmit = async () => {
         if (stepRef.current.validate()) {
             const data = stepRef.current.getData();
             handleNext(data); // merge final step data if needed
-            // Later: trigger email sending, Firestore save, etc.
-            router.push("/success");
+
+            try {
+                const response = await fetch("/api/send-email", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ formData: { ...formData, ...data } }),
+                });
+                const result = await response.json();
+                if (response.ok) {
+                    // Optionally do something on success
+                    router.push("/success");
+                } else {
+                    // Handle error (e.g. show a message)
+                    console.error("Email failed:", result.message);
+                }
+            } catch (error) {
+                console.error("Email submission error:", error);
+            }
+        }
+    };
+
+    // When clicking a validated step in the indicator, update currentStep.
+    const handleStepClick = (index) => {
+        // Only allow jumping if index is less than or equal to maxStepReached.
+        if (index <= maxStepReached) {
+            setCurrentStep(index);
+            window.scrollTo({ top: 0, behavior: "smooth" });
         }
     };
 
@@ -197,6 +229,8 @@ export default function JobDetail() {
                                     title: step.title || `Step ${index + 1}`,
                                 }))}
                                 currentStep={currentStep}
+                                maxReachedStep={maxStepReached}
+                                onStepClick={handleStepClick}
                             />
                         </div>
                         <div className="order-2 lg:order-1 p-4 lg:p-0">
