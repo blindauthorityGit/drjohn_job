@@ -132,7 +132,9 @@ export default function Home() {
                             Teamzusammenhalt und Freude beim Job. (Obwohl wir so ehrlich sind und zugeben, dass bei uns
                             – wie überall – auch nicht immer alles Gold ist was glänzt.)
                         </p>
-                        <H1>Ihre Job-Möglichkeiten bei uns</H1>
+                        <H1 klasse="hyphens-auto !text-4xl !normal-case" lang="de">
+                            Ihre Job-Möglichkeiten bei uns
+                        </H1>
                         <p className="text-lg tracking-wider mt-8 mb-4">
                             Einfach zwei Minuten Zeit nehmen, durch die folgenden Fragen klicken und dann lernen wir uns
                             vielleicht bald kennen.
