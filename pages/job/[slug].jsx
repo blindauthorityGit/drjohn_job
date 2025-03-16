@@ -21,6 +21,8 @@ import Fuenf from "@/assets/5.jpg";
 import Sechs from "@/assets/6.jpg";
 import { H1, H3 } from "@/components/typography";
 
+import { uploadFileToStorage, saveDataToFirestore } from "@/firebase";
+
 // Job list adapted to the links from the start page
 const jobs = [
     {
@@ -154,24 +156,49 @@ export default function JobDetail() {
             const data = stepRef.current.getData();
             handleNext(data); // merge final step data if needed
 
+            // Use formData.email (or similar) as the uploader identifier.
+            const uploaderId = formData.email || "anonymous";
+            const files = formData.fileData ? formData.fileData : [];
+            const downloadURLs = [];
+            for (const fileData of files) {
+                if (fileData.file) {
+                    try {
+                        const url = await uploadFileToStorage(fileData.file, uploaderId);
+                        downloadURLs.push(url);
+                    } catch (error) {
+                        console.error("Error uploading file:", error);
+                    }
+                } else if (fileData.url) {
+                    // Use already available URL (unlikely, if you always store the file object)
+                    downloadURLs.push(fileData.url);
+                }
+            }
+
+            // Merge the download URLs into formData under a new property.
+            const completeData = { ...formData, downloadURLs };
+
+            try {
+                const docId = await saveDataToFirestore(completeData);
+                console.log("Document saved with ID:", docId);
+            } catch (error) {
+                console.error("Firestore save failed:", error);
+            }
+
+            // Then send the email via your API, attaching the downloadURLs.
             try {
                 const response = await fetch("/api/send-email", {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ formData: { ...formData, ...data } }),
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ formData: completeData }),
                 });
                 const result = await response.json();
                 if (response.ok) {
-                    // Optionally do something on success
                     router.push("/success");
                 } else {
-                    // Handle error (e.g. show a message)
-                    console.error("Email failed:", result.message);
+                    console.error("Email sending failed:", result.message);
                 }
             } catch (error) {
-                console.error("Email submission error:", error);
+                console.error("Error in email API call:", error);
             }
         }
     };

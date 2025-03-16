@@ -1,24 +1,14 @@
-// components/StepFive.jsx
 import React, { useState, useRef, forwardRef, useImperativeHandle, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { FaTimes } from "react-icons/fa";
 import DL from "@/assets/dl.svg";
 
-const LOCAL_STORAGE_KEY = "stepFiveFiles";
-
 const StepFive = forwardRef(({ formData }, ref) => {
-    // Initialize fileData from formData or from localStorage if available.
-    const [fileData, setFileData] = useState(() => {
-        if (typeof window !== "undefined") {
-            const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
-            return stored ? JSON.parse(stored) : formData.fileData || [];
-        }
-        return formData.fileData || [];
-    });
+    // Initialize fileData from formData if available.
+    const [fileData, setFileData] = useState(formData.fileData || []);
     const [uploading, setUploading] = useState(false);
     const [uploadError, setUploadError] = useState(null);
 
-    // Acceptable MIME types and file extensions:
     const acceptedTypes = {
         "image/jpeg": [".jpeg", ".jpg"],
         "image/png": [".png"],
@@ -26,18 +16,12 @@ const StepFive = forwardRef(({ formData }, ref) => {
     };
     const maxSize = 5 * 1024 * 1024; // 5MB
 
-    // Dummy upload function simulating Firebase upload.
-    // For images, returns a preview URL; for PDFs, returns null (so you can display a PDF icon).
-    const uploadFile = (file) => {
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                const previewUrl = file.type.startsWith("image/") ? URL.createObjectURL(file) : null;
-                resolve(previewUrl);
-            }, 2000);
-        });
+    // Dummy function to create a preview URL for immediate display.
+    // (This is separate from the actual upload, which happens at final submission.)
+    const createPreviewUrl = (file) => {
+        return file.type.startsWith("image/") ? URL.createObjectURL(file) : null;
     };
 
-    // onDrop processes each accepted file and appends its metadata to fileData.
     const onDrop = async (acceptedFiles, rejectedFiles) => {
         if (rejectedFiles && rejectedFiles.length > 0) {
             setUploadError("Ungültiges Format oder Datei zu groß. (Max. 5MB; PDF, JPG, PNG)");
@@ -53,11 +37,13 @@ const StepFive = forwardRef(({ formData }, ref) => {
                     continue;
                 }
                 try {
-                    const previewUrl = await uploadFile(file);
+                    // Create a preview URL for display purposes.
+                    const previewUrl = createPreviewUrl(file);
                     const fileInfo = {
+                        file, // Store the actual File object for later upload
                         fileName: file.name,
                         type: file.type,
-                        url: previewUrl, // May be null for PDFs
+                        url: previewUrl, // temporary preview URL (blob)
                     };
                     newFiles.push(fileInfo);
                 } catch (error) {
@@ -75,22 +61,20 @@ const StepFive = forwardRef(({ formData }, ref) => {
         maxSize,
     });
 
-    // Remove a file and update localStorage.
     const removeFile = (index) => {
         setFileData((prev) => prev.filter((_, i) => i !== index));
     };
 
-    // When fileData changes, update localStorage.
     useEffect(() => {
         if (typeof window !== "undefined") {
-            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(fileData));
+            localStorage.setItem("stepFiveFiles", JSON.stringify(fileData));
         }
     }, [fileData]);
 
-    // Expose validate() and getData() methods.
     useImperativeHandle(ref, () => ({
         validate: () => true,
-        getData: () => fileData,
+        // Return an object so that global formData gets a "fileData" property.
+        getData: () => ({ fileData }),
     }));
 
     return (

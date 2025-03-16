@@ -14,8 +14,8 @@ export default async function handler(req, res) {
         port: 587,
         secure: false,
         auth: {
-            user: process.env.NEXT_DEV === "true" ? process.env.NEXT_W4YUSER : process.env.NEXT_MAIL_BUCHUNG_LIVE,
-            pass: process.env.NEXT_DEV === "true" ? process.env.NEXT_W4YPASSWORD : process.env.NEXT_MAIL_PW_LIVE,
+            user: process.env.NEXT_DEV === "true" ? process.env.NEXT_W4YUSER : process.env.NEXT_W4YUSER,
+            pass: process.env.NEXT_DEV === "true" ? process.env.NEXT_W4YPASSWORD : process.env.NEXT_W4YUSER,
         },
     });
 
@@ -40,17 +40,17 @@ export default async function handler(req, res) {
       <li><strong>Urlaub:</strong> ${formData.urlaub || ""}</li>
       <li><strong>Eintrittstermin:</strong> ${formData.beginn || ""}</li>
       <li><strong>Zeitwunsch:</strong> ${formData.zeitWunsch || ""}</li>
-      ${
-          formData.fileData && formData.fileData.length
-              ? `<li><strong>Dateien:</strong> ${formData.fileData.map((file) => file.fileName).join(", ")}</li>`
-              : ""
-      }
+    ${
+        formData.downloadURLs && formData.downloadURLs.length
+            ? `<li><strong>Dateien:</strong> ${formData.downloadURLs.join("<br/>")}</li>`
+            : ""
+    }
     </ul>
   `;
 
     try {
         let info = await transporter.sendMail({
-            from: process.env.NEXT_DEV === "true" ? process.env.NEXT_W4YUSER : process.env.NEXT_MAIL_BUCHUNG_LIVE,
+            from: process.env.NEXT_DEV === "true" ? process.env.NEXT_W4YUSER : process.env.NEXT_W4YUSER,
             to: process.env.NEXT_DEV === "true" ? "office@atelierbuchner.at" : "th@praxis-dreieich.de",
             subject: "Neue Bewerbung von " + (formData.vorname || "") + " " + (formData.nachname || ""),
             html: emailContent,
