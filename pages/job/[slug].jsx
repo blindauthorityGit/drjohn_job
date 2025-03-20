@@ -104,7 +104,7 @@ export default function JobDetail() {
     const { slug } = router.query;
     console.log(slug);
 
-    // Look up job using the new slug from our adapted job list
+    // Look up job using the slug from our job list
     const job = jobs.find((j) => j.slug === slug);
     console.log(jobs.map((e) => e.slug));
     if (!job) {
@@ -113,20 +113,17 @@ export default function JobDetail() {
 
     const [currentStep, setCurrentStep] = useState(0);
     const [maxStepReached, setMaxStepReached] = useState(0);
-
     const [formData, setFormData] = useState({});
+    const [submitting, setSubmitting] = useState(false);
     const stepRef = useRef();
 
-    // Get the component and image for the current step
     const StepComponent = steps[currentStep].component;
     const currentImage = steps[currentStep].image;
 
-    // When moving to the next step, merge data from the step into global formData.
     const handleNext = (data) => {
         setFormData((prev) => ({ ...prev, ...data }));
         setCurrentStep((prev) => {
             const nextStep = Math.min(prev + 1, steps.length - 1);
-            // Update maxStepReached if necessary
             setMaxStepReached((prevMax) => Math.max(prevMax, nextStep));
             window.scrollTo({ top: 0, behavior: "smooth" });
             return nextStep;
@@ -141,7 +138,6 @@ export default function JobDetail() {
         });
     };
 
-    // The parent's Next button triggers the step's validate method.
     const handleNextButton = () => {
         if (stepRef.current.validate()) {
             const data = stepRef.current.getData();
@@ -150,13 +146,15 @@ export default function JobDetail() {
         }
     };
 
-    // Final submit: validate, update data and route to "/success".
     const handleFinalSubmit = async () => {
         if (stepRef.current.validate()) {
-            const data = stepRef.current.getData();
-            handleNext(data); // merge final step data if needed
+            // Get data from the final step (this should include zusatzinfo)
+            const stepData = stepRef.current.getData();
+            // Merge the final step data into your global formData
+            handleNext(stepData);
 
-            // Use formData.email (or similar) as the uploader identifier.
+            setSubmitting(true);
+            // Use formData.email as uploader identifier.
             const uploaderId = formData.email || "anonymous";
             const files = formData.fileData ? formData.fileData : [];
             const downloadURLs = [];
@@ -169,13 +167,12 @@ export default function JobDetail() {
                         console.error("Error uploading file:", error);
                     }
                 } else if (fileData.url) {
-                    // Use already available URL (unlikely, if you always store the file object)
                     downloadURLs.push(fileData.url);
                 }
             }
-
-            // Merge the download URLs into formData under a new property.
-            const completeData = { ...formData, downloadURLs };
+            // Merge the download URLs and job title into the final data,
+            // and also merge the stepData to include zusatzinfo
+            const completeData = { ...formData, ...stepData, downloadURLs, job: job.title };
 
             try {
                 const docId = await saveDataToFirestore(completeData);
@@ -184,7 +181,6 @@ export default function JobDetail() {
                 console.error("Firestore save failed:", error);
             }
 
-            // Then send the email via your API, attaching the downloadURLs.
             try {
                 const response = await fetch("/api/send-email", {
                     method: "POST",
@@ -199,32 +195,65 @@ export default function JobDetail() {
                 }
             } catch (error) {
                 console.error("Error in email API call:", error);
+            } finally {
+                setSubmitting(false);
             }
         }
     };
 
-    // When clicking a validated step in the indicator, update currentStep.
     const handleStepClick = (index) => {
-        // Only allow jumping if index is less than or equal to maxStepReached.
         if (index <= maxStepReached) {
             setCurrentStep(index);
             window.scrollTo({ top: 0, behavior: "smooth" });
         }
     };
 
-    // Define subtle hover and tap effects for the buttons
     const buttonMotionProps = {
         whileHover: { scale: 1.02 },
         whileTap: { scale: 0.98 },
         transition: { duration: 0.15 },
     };
+
     return (
         <>
             <Menu showLink />
+            {/* Overlay and Spinner */}
+            <AnimatePresence>
+                {submitting && (
+                    <motion.div
+                        key="overlay"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 0.6 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed top-0 left-0 right-0 bottom-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+                    >
+                        <div className="loader"></div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+            <style jsx global>{`
+                .loader {
+                    border: 6px solid #f3f3f3;
+                    border-top: 6px solid #3498db;
+                    border-radius: 50%;
+                    width: 40px;
+                    height: 40px;
+                    animation: spin 1s linear infinite;
+                }
+                @keyframes spin {
+                    0% {
+                        transform: rotate(0deg);
+                    }
+                    100% {
+                        transform: rotate(360deg);
+                    }
+                }
+            `}</style>
+
             <div className="grid grid-cols-1 lg:grid-cols-12 min-h-screen font-headline">
                 {/* Mobile: Image on top; Desktop: Content on left */}
                 <div className="order-first lg:order-last relative overflow-hidden">
-                    <div className="h-[25vh] lg:fixed lg:top-0  lg:right-0 lg:h-screen lg:w-[50%]">
+                    <div className="h-[25vh] lg:fixed lg:top-0 lg:right-0 lg:h-screen lg:w-[50%]">
                         <AnimatePresence exitBeforeEnter>
                             <motion.div
                                 key={currentImage.src}
@@ -247,9 +276,8 @@ export default function JobDetail() {
                 </div>
 
                 {/* Content Section */}
-                <div className="order-last lg:order-first lg:col-span-6 pt-0  lg:p-16 lg:pt-48 flex flex-col">
+                <div className="order-last lg:order-first lg:col-span-6 pt-0 lg:p-16 lg:pt-48 flex flex-col">
                     <div className="flex-1 flex flex-col">
-                        {/* On mobile, show the indicator first; on desktop, show title first */}
                         <div className="order-1 lg:order-2">
                             <StepIndicator
                                 steps={steps.map((step, index) => ({

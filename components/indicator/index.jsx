@@ -7,7 +7,7 @@ const StepIndicator = ({ steps, currentStep, maxReachedStep, onStepClick }) => {
     return (
         <div className="fixed top-0 left-0 right-0 z-20 w-full flex flex-col items-center bg-[#D9DED7] p-2 lg:sticky lg:top-0">
             <div className="relative w-full">
-                <div className="absolute top-3 left-0 right-0 h-1 bg-white w-[93%]" />
+                <div className="absolute top-3 left-0 right-0 h-1 bg-white w-[100%]" />
                 <motion.div
                     className="absolute top-2 lg:top-3 left-0 h-1 bg-black"
                     initial={{ width: 0 }}

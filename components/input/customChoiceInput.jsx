@@ -51,7 +51,7 @@ const CustomChoiceInput = forwardRef(({ name, options, value, onChange, validato
                     );
                 })}
             </div>
-            {error && <p className="mt-1  text-red-500  tracking-wider">{error}</p>}
+            {error && <p className="mt-1  text-red-500 font-bold tracking-wider">{error}</p>}
         </div>
     );
 });

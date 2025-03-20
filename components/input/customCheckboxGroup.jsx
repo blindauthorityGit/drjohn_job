@@ -33,12 +33,12 @@ const CustomCheckboxGroup = forwardRef(({ name, options, value = [], onChange, v
     return (
         <div className="mb-6">
             {label && (
-                <label className=" text-lg tracking-wider text-black relative flex">
+                <label className="text-lg tracking-wider text-black relative flex">
                     <div className="w-4 h-4 mr-2 bg-[#D9DED7]" />
                     {label}
                 </label>
             )}
-            <div className="space-y-2 mt-4">
+            <div className={`mt-4 space-y-2 p-2 ${error ? "border border-red-500 rounded" : ""}`}>
                 {options.map((option, index) => {
                     const isSelected = value.includes(option.value);
                     return (
@@ -60,7 +60,7 @@ const CustomCheckboxGroup = forwardRef(({ name, options, value = [], onChange, v
                     );
                 })}
             </div>
-            {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
+            {error && <p className="mt-1 text-sm text-red-500 font-bold">{error}</p>}
         </div>
     );
 });

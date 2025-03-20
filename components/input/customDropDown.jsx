@@ -6,7 +6,7 @@ const CustomDropdown = forwardRef(({ name, label, options, value, onChange, vali
     const [error, setError] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
 
-    // Expose a validate() method to the parent
+    // Expose a validate() method to the parent.
     useImperativeHandle(ref, () => ({
         validate: () => {
             if (validator) {
@@ -31,14 +31,16 @@ const CustomDropdown = forwardRef(({ name, label, options, value, onChange, vali
     return (
         <div className="mb-6 relative">
             {label && (
-                <label className=" text-lg tracking-wider text-black relative flex">
+                <label className="text-lg tracking-wider text-black relative flex">
                     <div className="w-4 h-4 mr-2 bg-[#D9DED7]" />
                     {label}
                 </label>
             )}
             <div
-                className="border border-gray-300 rounded-md p-4 mt-4 cursor-pointer flex justify-between items-center"
                 onClick={() => setIsOpen((prev) => !prev)}
+                className={`rounded-md p-4 mt-4 cursor-pointer flex justify-between items-center ${
+                    error ? "border border-red-500" : "border border-gray-300"
+                }`}
             >
                 <span className="text-lg tracking-wider">
                     {selectedOption ? selectedOption.label : "Bitte auswählen"}
@@ -71,7 +73,7 @@ const CustomDropdown = forwardRef(({ name, label, options, value, onChange, vali
                     </motion.ul>
                 )}
             </AnimatePresence>
-            {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
+            {error && <p className="mt-1 text-sm text-red-500 font-bold">{error}</p>}
         </div>
     );
 });

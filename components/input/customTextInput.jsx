@@ -78,7 +78,9 @@ const CustomTextInput = forwardRef(
                             value={value}
                             onChange={handleInputChange}
                             placeholder={placeholder}
-                            className="block tracking-wider border border-black p-4 focus:ring-blue-500 focus:border-blue-500 flex-1"
+                            className={`block tracking-wider border p-4 focus:ring-blue-500 focus:border-blue-500 flex-1 ${
+                                error ? "border-red-500" : "border-black"
+                            }`}
                         />
                         <input
                             type="text"
@@ -86,7 +88,9 @@ const CustomTextInput = forwardRef(
                             value={secondValue}
                             onChange={handleSecondInputChange}
                             placeholder={secondPlaceholder}
-                            className="block tracking-wider border border-black p-4 focus:ring-blue-500 focus:border-blue-500 flex-1"
+                            className={`block tracking-wider border p-4 focus:ring-blue-500 focus:border-blue-500 flex-1 ${
+                                secondError ? "border-red-500" : "border-black"
+                            }`}
                         />
                     </div>
                 ) : (
@@ -96,11 +100,13 @@ const CustomTextInput = forwardRef(
                         value={value}
                         onChange={handleInputChange}
                         placeholder={placeholder}
-                        className="mt-1 block tracking-wider w-full border border-black p-4 focus:ring-blue-500 focus:border-blue-500"
+                        className={`mt-1 block tracking-wider w-full border p-4 focus:ring-blue-500 focus:border-blue-500 ${
+                            error ? "border-red-500" : "border-black"
+                        }`}
                     />
                 )}
-                {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
-                {secondError && <p className="mt-1 text-xs text-red-500">{secondError}</p>}
+                {error && <p className="mt-1 text-sm text-red-500 font-bold">{error}</p>}
+                {secondError && <p className="mt-1 text-sm text-red-500 font-bold">{secondError}</p>}
             </div>
         );
     }

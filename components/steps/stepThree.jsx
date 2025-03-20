@@ -1,4 +1,3 @@
-// components/steps/StepThree.jsx
 import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from "react";
 import CustomTextInput from "@/components/input/customTextInput";
 import CustomDropdown from "@/components/input/customDropDown";
@@ -28,12 +27,23 @@ const StepThree = forwardRef(({ formData }, ref) => {
         setLocalData((prev) => ({ ...prev, [name]: value }));
     };
 
-    // Optional validator for the text inputs (if these fields are optional)
-    const validateOptional = (value) => {
+    // Validator for the salary input – now mandatory.
+    const validateGehalt = (value) => {
+        if (!value.trim()) {
+            return "Bitte geben Sie Ihr gewünschtes Gehalt ein";
+        }
         return null;
     };
 
-    // Validator for the dropdown – error if no option is selected
+    // Validator for the vacation input – now mandatory.
+    const validateUrlaub = (value) => {
+        if (!value.trim()) {
+            return "Bitte geben Sie Ihre Urlaubstage an";
+        }
+        return null;
+    };
+
+    // Validator for the dropdown – error if no option is selected.
     const validateJobType = (value) => {
         if (!value) {
             return "Bitte wählen Sie einen Beginn";
@@ -41,9 +51,7 @@ const StepThree = forwardRef(({ formData }, ref) => {
         return null;
     };
 
-    // Expose methods to the parent via the ref:
-    // - validate: triggers validation on each input field
-    // - getData: returns the local form data for this step
+    // Expose methods to the parent via the ref.
     useImperativeHandle(ref, () => ({
         validate: () => {
             const salaryValid = salaryRef.current.validate();
@@ -65,7 +73,6 @@ const StepThree = forwardRef(({ formData }, ref) => {
     return (
         <div>
             <div className="lg:mt-8"></div>
-
             <CustomTextInput
                 ref={salaryRef}
                 label="Welches Bruttojahresgehalt stellen Sie sich vor?"
@@ -73,7 +80,7 @@ const StepThree = forwardRef(({ formData }, ref) => {
                 placeholder="z.B. EUR 40.000 brutto / Jahr"
                 value={localData.gehalt}
                 onChange={handleFieldChange}
-                validator={validateOptional}
+                validator={validateGehalt}
             />
             <div className="h-4"></div>
             <CustomTextInput
@@ -83,7 +90,7 @@ const StepThree = forwardRef(({ formData }, ref) => {
                 placeholder="z.B. 30 Tage / Jahr"
                 value={localData.urlaub}
                 onChange={handleFieldChange}
-                validator={validateOptional}
+                validator={validateUrlaub}
             />
             <div className="h-4"></div>
             <CustomDropdown
