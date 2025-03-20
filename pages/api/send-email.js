@@ -10,12 +10,12 @@ export default async function handler(req, res) {
 
     // Create a transporter using environment variables for security
     let transporter = nodemailer.createTransport({
-        host: process.env.NEXT_DEV === "true" ? "smtp.world4you.com" : "smtp.ionos.de",
+        host: process.env.NEXT_DEV === "true" ? "smtp.world4you.com" : "smtp.world4you.com",
         port: 587,
         secure: false,
         auth: {
             user: process.env.NEXT_DEV === "true" ? process.env.NEXT_W4YUSER : process.env.NEXT_W4YUSER,
-            pass: process.env.NEXT_DEV === "true" ? process.env.NEXT_W4YPASSWORD : process.env.NEXT_W4YUSER,
+            pass: process.env.NEXT_DEV === "true" ? process.env.NEXT_W4YPASSWORD : process.env.NEXT_W4YPASSWORD,
         },
     });
 
