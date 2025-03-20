@@ -26,6 +26,10 @@ const storage = getStorage(app);
  * @returns {Promise<string>} - The download URL of the uploaded file.
  */
 export const uploadFileToStorage = async (file, uploaderId = "anonymous", folderPath = "drJohn_uploads") => {
+    // If not in development mode, override the folder path.
+    if (process.env.NEXT_DEV !== "true") {
+        folderPath = "drJohn_liveUploads";
+    }
     // Organize files under a folder for each uploader.
     const fileRef = ref(storage, `${folderPath}/${uploaderId}/${file.name}-${Date.now()}`);
     const snapshot = await uploadBytes(fileRef, file);
@@ -41,6 +45,10 @@ export const uploadFileToStorage = async (file, uploaderId = "anonymous", folder
  * @returns {Promise<string>} - The ID of the created document.
  */
 export const saveDataToFirestore = async (data, collectionName = "drJohn_applications") => {
+    // Override the collection name if not in development
+    if (process.env.NEXT_DEV !== "true") {
+        collectionName = "drJohn_liveApplications";
+    }
     // Clean your data (make sure it's serializable) and add createdAt.
     const cleanData = JSON.parse(JSON.stringify(data));
     cleanData.createdAt = serverTimestamp();
