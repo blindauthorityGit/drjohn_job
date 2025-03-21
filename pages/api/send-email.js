@@ -10,12 +10,12 @@ export default async function handler(req, res) {
 
     // Create a transporter using environment variables for security
     let transporter = nodemailer.createTransport({
-        host: process.env.NEXT_DEV === "true" ? "smtp.world4you.com" : "smtp.world4you.com",
+        host: process.env.NEXT_DEV === "true" ? "smtp.world4you.com" : "smtp.ionos.de",
         port: 587,
         secure: false,
         auth: {
-            user: process.env.NEXT_DEV === "true" ? process.env.NEXT_W4YUSER : process.env.NEXT_W4YUSER,
-            pass: process.env.NEXT_DEV === "true" ? process.env.NEXT_W4YPASSWORD : process.env.NEXT_W4YPASSWORD,
+            user: process.env.NEXT_DEV === "true" ? process.env.NEXT_W4YUSER : process.env.NEXT_LIVE_EMAIL,
+            pass: process.env.NEXT_DEV === "true" ? process.env.NEXT_W4YPASSWORD : process.env.NEXT_LIVE_PW,
         },
     });
 
@@ -79,7 +79,7 @@ export default async function handler(req, res) {
 
     try {
         let info = await transporter.sendMail({
-            from: process.env.NEXT_DEV === "true" ? process.env.NEXT_W4YUSER : process.env.NEXT_W4YUSER,
+            from: process.env.NEXT_DEV === "true" ? process.env.NEXT_W4YUSER : process.env.NEXT_LIVE_EMAIL,
             to: process.env.NEXT_DEV === "true" ? "office@atelierbuchner.at" : "th@praxis-dreieich.de",
             subject:
                 "Neue Bewerbung als " +
