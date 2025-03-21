@@ -27,7 +27,7 @@ export default function Success() {
             <div className="grid grid-cols-1 lg:grid-cols-12 min-h-screen font-headline">
                 {/* Image Section */}
                 <div className="order-first lg:order-last relative overflow-hidden">
-                    <div className="h-[25vh] lg:fixed lg:top-0 lg:right-0 lg:h-screen lg:w-[33.33%]">
+                    <div className="h-[50vh] lg:fixed lg:top-0 lg:right-0 lg:h-screen lg:w-[33.33%]">
                         <AnimatePresence exitBeforeEnter>
                             <motion.div
                                 key={Thilo.src}
@@ -50,7 +50,7 @@ export default function Success() {
                 </div>
 
                 {/* Content Section */}
-                <div className="order-last lg:order-first lg:col-span-8 p-8 lg:p-16 pt-16 lg:pt-64 flex flex-col">
+                <div className="order-last lg:order-first lg:col-span-8 p-8 lg:p-16 pt-10 lg:pt-64 flex flex-col">
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
